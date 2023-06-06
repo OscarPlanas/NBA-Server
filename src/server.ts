@@ -30,7 +30,7 @@ app.get('/', ( req: express.Request, res: express.Response ) => {
 
 
 //mongo
-mongoose.connect('mongodb://localhost/WarTracker', { useNewUrlParser : true } as ConnectOptions)
+mongoose.connect('mongodb://localhost/nbamvp', { useNewUrlParser : true } as ConnectOptions)
 	.then(() => {
 		// tslint:disable-next-line:no-console
         app.listen(port, () => console.log('Server corriendo en el puerto ' + port));

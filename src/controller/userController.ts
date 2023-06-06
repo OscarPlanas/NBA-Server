@@ -1,9 +1,10 @@
 import User from '../model/User';
-
+import crypto from 'crypto';
 
 import CryptoJS from 'crypto-js';
 import { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
+import AnonymousIdentity from '../model/AnonymousIdentity';
 
 const profile = async (req: Request, res: Response) => {
 	const user = await User.findById(req.params.id);
@@ -14,8 +15,12 @@ const profile = async (req: Request, res: Response) => {
 	res.status(200).json(user);
 };
 const getall = async (req: Request, res: Response) => {
-	const users = await User.find();
-	res.status(200).json(users);
+	try {
+		const users = await User.find();
+		res.json(users);
+	  } catch (error) {
+		res.status(500).json({ error: 'An error occurred' });
+	  }
 };
 
 const getone = async (req: Request, res: Response) => {
@@ -55,6 +60,33 @@ const update = async (req: Request, res: Response) => {
 	}
 };
 
+const createAnonymousIdentity = async (req: Request, res: Response) => {
+	const username = req.params.username;
+	console.log(username);
+	const hash = crypto.createHash('sha256');
+	console.log(hash);
+  	hash.update(username);
+  	const hashValue = hash.digest('hex');
+	console.log(hashValue);
+
+	const useranonymousid = new AnonymousIdentity({anonymousid: hashValue});
+	console.log(useranonymousid);
+	
+	await useranonymousid.save( (err: any) => {
+		if (err) {
+			return res.status(500).send(err);
+		}
+		res.status(200).json({ status: 'AnonymousIdentity saved' });
+	});	
+};
+
+const getAllAnonymousIdentity = async (req: Request, res: Response) => {
+
+	const anonymousidentities = await AnonymousIdentity.find();
+
+	res.json(anonymousidentities);
+};
+
 export default {
 	profile,
 	getall,
@@ -62,4 +94,6 @@ export default {
 	deleteUser,
 	update,
 	getbyemail,
+	createAnonymousIdentity,
+	getAllAnonymousIdentity
 };
