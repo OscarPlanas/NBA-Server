@@ -2,7 +2,7 @@ import User from '../model/User';
 import crypto from 'crypto';
 
 import CryptoJS from 'crypto-js';
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import AnonymousIdentity from '../model/AnonymousIdentity';
 
@@ -62,6 +62,10 @@ const update = async (req: Request, res: Response) => {
 
 const createAnonymousIdentity = async (req: Request, res: Response) => {
 	const username = req.params.username;
+	const existingUser = await User.findOne({ username: username });
+	if (!existingUser) {
+		return res.status(402).send('User does not exist');
+	}
 	console.log(username);
 	const hash = crypto.createHash('sha256');
 	console.log(hash);
@@ -69,6 +73,10 @@ const createAnonymousIdentity = async (req: Request, res: Response) => {
   	const hashValue = hash.digest('hex');
 	console.log(hashValue);
 
+	const existingHash = await AnonymousIdentity.findOne({ anonymousid: hashValue });
+	if (existingHash) {
+		return res.status(401).send('AnonymousIdentity already exists');
+	}
 	const useranonymousid = new AnonymousIdentity({anonymousid: hashValue});
 	console.log(useranonymousid);
 	
