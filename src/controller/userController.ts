@@ -64,7 +64,7 @@ const createAnonymousIdentity = async (req: Request, res: Response) => {
 	const username = req.params.username;
 	const existingUser = await User.findOne({ username: username });
 	if (!existingUser) {
-		return res.status(402).send('User does not exist');
+		return res.status(202).send('User does not exist');
 	}
 	console.log(username);
 	const hash = crypto.createHash('sha256');
@@ -75,7 +75,7 @@ const createAnonymousIdentity = async (req: Request, res: Response) => {
 
 	const existingHash = await AnonymousIdentity.findOne({ anonymousid: hashValue });
 	if (existingHash) {
-		return res.status(401).send('AnonymousIdentity already exists');
+		return res.status(201).send('AnonymousIdentity already exists');
 	}
 	const useranonymousid = new AnonymousIdentity({anonymousid: hashValue});
 	console.log(useranonymousid);
