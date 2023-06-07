@@ -75,7 +75,7 @@ const createAnonymousIdentity = async (req: Request, res: Response) => {
 
 	const existingHash = await AnonymousIdentity.findOne({ anonymousid: hashValue });
 	if (existingHash) {
-		return res.status(201).send('AnonymousIdentity already exists');
+		return res.status(201).send('User has already voted');
 	}
 	const useranonymousid = new AnonymousIdentity({anonymousid: hashValue});
 	console.log(useranonymousid);
