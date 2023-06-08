@@ -30,7 +30,7 @@ const usersData = [
     password: 'password2',
     email: 'janesmith@example.com'
   },
-  
+
 ];
 
 // Create and save the users

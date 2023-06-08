@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import mongoose, { ConnectOptions } from "mongoose";
 import cors from "cors";
 import User from "./api/User";
+import Player from "./api/Player";
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(bodyParser.json())
 app.use(cors());
 
 app.use('/api/users', User)
+app.use('/api/players', Player)
 
 
 app.get('/', ( req: express.Request, res: express.Response ) => {
