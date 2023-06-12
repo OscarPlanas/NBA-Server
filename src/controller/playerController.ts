@@ -16,4 +16,17 @@ const createdPlayer = async (req: Request, res: Response) => {
     );
 };
 
-export default { createdPlayer };
+const getPlayers = async (req: Request, res: Response) => {
+    Player.find({}, (err: any, players: any) => {
+        if (err) {
+            res.status(500).json({ message: 'error unknown', err });
+        }
+        res.status(200).json(players);
+    }
+    );
+};
+
+export default { 
+    createdPlayer, 
+    getPlayers 
+};

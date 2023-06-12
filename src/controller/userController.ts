@@ -61,7 +61,7 @@ const createAnonymousIdentity = async (req: Request, res: Response) => {
 		if (err) {
 			return res.status(500).send(err);
 		}
-		res.status(200).json({ status: 'AnonymousIdentity saved' });
+		res.status(200).json({ status: 'AnonymousIdentity saved', useranonymousid });
 	});	
 };
 
