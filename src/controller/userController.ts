@@ -72,10 +72,20 @@ const getAllAnonymousIdentity = async (req: Request, res: Response) => {
 	res.json(anonymousidentities);
 };
 
+const sendVote = async (req: Request, res: Response) => {
+	const hash = req.params.hash;
+	const vote = req.params.vote;
+
+	
+
+};
+
+
 export default {
 	getall,
 	getone,
 	deleteUser,
 	createAnonymousIdentity,
-	getAllAnonymousIdentity
+	getAllAnonymousIdentity,
+	sendVote
 };
