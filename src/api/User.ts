@@ -6,11 +6,12 @@ const router = Router();
 
 router.get('/getIdentity', userController.getAllAnonymousIdentity);
 router.get('/', userController.getall);
-router.get('/:id', userController.getone);
-router.delete('/:id', userController.deleteUser);
 
 
 
 router.post('/createAnonymousIdentity/:username', userController.createAnonymousIdentity);
+router.post('/sendVote/:paillierVote/:encrypted', userController.sendVote);
+router.get('/publicKey', userController.getRsaPublicKey);
+router.get('/getPailierPublicKey', userController.getPailierPublicKey);
 
 export default router;

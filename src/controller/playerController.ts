@@ -1,10 +1,6 @@
-import crypto from 'crypto';
 import Player from '../model/Player';
 
-import CryptoJS from 'crypto-js';
-import e, { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
-import AnonymousIdentity from '../model/AnonymousIdentity';
+import { Request, Response } from 'express';
 
 const createdPlayer = async (req: Request, res: Response) => {
     Player.create(req.body, (err: any, player: any) => {

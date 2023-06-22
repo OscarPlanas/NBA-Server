@@ -5,7 +5,8 @@ import mongoose, { ConnectOptions } from "mongoose";
 import cors from "cors";
 import User from "./api/User";
 import Player from "./api/Player";
-import Paillier from "./api/Paillier";
+
+
 
 const app = express();
 
@@ -24,7 +25,8 @@ app.use(cors());
 
 app.use('/api/users', User)
 app.use('/api/players', Player)
-app.use('/api/paillier', Paillier)
+
+
 
 
 app.get('/', ( req: express.Request, res: express.Response ) => {
