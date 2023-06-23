@@ -2,11 +2,9 @@ import crypto from 'crypto';
 import User from '../model/User';
 
 import { Request, Response } from 'express';
+import { KeyPair, PaillierKeyPair, generateMyRsaKeys, generatePaillierKeys } from '../index';
 import AnonymousIdentity from '../model/AnonymousIdentity';
-import * as bc from 'bigint-conversion';
-import { KeyPair, generateMyRsaKeys } from '../index';
 import Player from '../model/Player';
-import { PaillierKeyPair, generatePaillierKeys } from '../index';
 
 const bitLength = 2048;
 const keysPromise: Promise<KeyPair> = generateMyRsaKeys(bitLength)
@@ -57,20 +55,20 @@ const sendVote = async (req: Request, res: Response) => {
 
 	const keysPaillier = await paillierKeysPromise;
 
+	//Desencriptamos la ID del jugador y vemos si existe
 	const MessageEncrypted = req.params.encrypted;
-
 	const keyPair = await keysPromise;
-
 	const decrypted = keyPair.privateKey.decrypt(BigInt(MessageEncrypted));
-
 	const existingPlayer = await Player.findOne({ id: decrypted.toString() });
 	if (!existingPlayer) {
 		return res.status(202).send('Player does not exist');
 	}
 
+	//Si existe, vemos a que jugador hay que añadirle el voto	
 	if (existingPlayer.id == 1) {
 		const existingVotes = existingPlayer.votes;
 
+		//En caso de que no tenga ningún voto
 		if (existingVotes == "0") {
 			const c1 = BigInt(existingVotes);
 			const c1encrypted = keysPaillier.publicKey.encrypt(c1);
@@ -78,10 +76,10 @@ const sendVote = async (req: Request, res: Response) => {
 			const c2 = BigInt(paillierVote);
 
 			const encryptedSum = keysPaillier.publicKey.addition(c1encrypted, c2);
-
+			//Tan solo para visualizarlo por consola
 			const decryptedSum = keysPaillier.privateKey.decrypt(encryptedSum);
 			console.log("decryptedSum", decryptedSum);
-
+			//Actualizamos el jugador
 			existingPlayer.updateOne({ $set: { votes: encryptedSum.toString() } }, (err: any) => {
 				if (err) {
 					console.log("Error");
@@ -109,7 +107,7 @@ const sendVote = async (req: Request, res: Response) => {
 			});
 		}
 
-
+		//Hacemos lo mismo con el resto de jugadores
 	} else if (existingPlayer?.id == 2) {
 		const existingVotes = existingPlayer.votes;
 
@@ -157,7 +155,7 @@ const sendVote = async (req: Request, res: Response) => {
 		const existingVotes = existingPlayer.votes;
 
 		if (existingVotes == "0") {
-			
+
 			const c1 = BigInt(existingVotes);
 			const c1encrypted = keysPaillier.publicKey.encrypt(c1);
 
@@ -584,21 +582,21 @@ const getAllPlayers = async (req: Request, res: Response) => {
 	const keysPaillier = await paillierKeysPromise;
 
 	Player.find({}, (err: any, players: any) => {
-        if (err) {
-            return res.status(500).json({ message: 'Unknown error', error: err });
-        }
+		if (err) {
+			return res.status(500).json({ message: 'Unknown error', error: err });
+		}
 
-        // Extraemos nombres y votos de los jugadores
+		// Extraemos nombres y votos de los jugadores
 		console.log("players", players);
-        const playerData = players.map((player: any) => {
-            return {
-                name: player.name,
-                votes: keysPaillier.privateKey.decrypt(BigInt(player.votes)).toString(),
-            };
-        });
+		const playerData = players.map((player: any) => {
+			return {
+				name: player.name,
+				votes: keysPaillier.privateKey.decrypt(BigInt(player.votes)).toString(),
+			};
+		});
 
-        res.status(200).json(playerData);
-    });
+		res.status(200).json(playerData);
+	});
 };
 
 export default {

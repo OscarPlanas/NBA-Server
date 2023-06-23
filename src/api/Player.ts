@@ -1,6 +1,5 @@
-import playerController from '../controller/playerController';
 import { Router } from 'express';
-import { body } from 'express-validator';
+import playerController from '../controller/playerController';
 
 const router = Router();
 
