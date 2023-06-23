@@ -13,5 +13,6 @@ router.post('/createAnonymousIdentity/:username', userController.createAnonymous
 router.post('/sendVote/:paillierVote/:encrypted', userController.sendVote);
 router.get('/publicKey', userController.getRsaPublicKey);
 router.get('/getPailierPublicKey', userController.getPailierPublicKey);
+router.get('/getAllPlayers', userController.getAllPlayers);
 
 export default router;

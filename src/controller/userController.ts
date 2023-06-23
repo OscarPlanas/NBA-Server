@@ -580,11 +580,33 @@ const getPailierPublicKey = async (req: Request, res: Response) => {
 	res.json(pubKey.publicKey.toJSON());
 };
 
+const getAllPlayers = async (req: Request, res: Response) => {
+	const keysPaillier = await paillierKeysPromise;
+
+	Player.find({}, (err: any, players: any) => {
+        if (err) {
+            return res.status(500).json({ message: 'Unknown error', error: err });
+        }
+
+        // Extraemos nombres y votos de los jugadores
+		console.log("players", players);
+        const playerData = players.map((player: any) => {
+            return {
+                name: player.name,
+                votes: keysPaillier.privateKey.decrypt(BigInt(player.votes)).toString(),
+            };
+        });
+
+        res.status(200).json(playerData);
+    });
+};
+
 export default {
 	getall,
 	createAnonymousIdentity,
 	getAllAnonymousIdentity,
 	sendVote,
 	getRsaPublicKey,
-	getPailierPublicKey
+	getPailierPublicKey,
+	getAllPlayers
 };
